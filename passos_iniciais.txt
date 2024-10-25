@@ -1,0 +1,14 @@
+# consultar o arquivo robots.txt dos sites antes de realizar uma raspagem de dados.
+Para verificar basta colocar o link/robots.txt (mercadolivre.com/robots.txt)
+
+#Primeiros passos 
+1- utilizar o terminal para criar um ambiente virtual com o comando python -m venv iuri
+2- ativar ambiente com comando iuri\Scripts\activate
+3- instalar o scrapy com pip install scrapy
+4- iniciar um projeto scrapy com "scrapy startproject varredor_de_sites"
+5- acessar a pasta do projeto
+
+
+#Verificar o que o xpath esta retornando
+"scrapy shell link_do_site"
+
