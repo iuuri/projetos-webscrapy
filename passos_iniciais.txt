@@ -5,10 +5,57 @@ Para verificar basta colocar o link/robots.txt (mercadolivre.com/robots.txt)
 1- utilizar o terminal para criar um ambiente virtual com o comando python -m venv iuri
 2- ativar ambiente com comando iuri\Scripts\activate
 3- instalar o scrapy com pip install scrapy
-4- iniciar um projeto scrapy com "scrapy startproject varredor_de_sites"
+4- iniciar um projeto scrapy com "scrapy startproject (nome do proejto)"
 5- acessar a pasta do projeto
+6- criar um arquivo nome_do_site.py dentro da pasta spider 
+7- importar bibliotecas conforme codigo abaixo
+8- criar um classe em camelcase com um nome do projeto finalizando com spider "NomeProjetoSpider(scrapy.Spider):" 
+
+#exportar dados para um csv usar o comando "scrapy crawl frasebot -o(comando) dados.csv(nome do arquivo)"
+
+#Codigo inicial: 
+    from typing import Any, Iterable
+    import scrapy
+    from scrapy.http import Response
+
+    class QuotesToScrapeSpider(scrapy.Spider):
+        #Identidade (nome do bot)
+        name = 'frasebot'
+        #Request
+        def start_requests(self): 
+            urls = ['https://quotes.toscrape.com/']
+
+            for url in urls:
+                yield scrapy.Request(url=url, callback=self.parse)
+
+        #Response
+        def parse(self, response):
+            #Aqui sera feito o processamento das paginas.
+            pass
 
 
-#Verificar o que o xpath esta retornando
-"scrapy shell link_do_site"
+9- executar o codigo com "scrapy crawl frasebot" (frasebot é o nome dado ao bot, pode mudar de acordo com o projeto)
+
+#Xpath 
+//div[@class="quote"]/text() #retorna apenas o texto
+//div[@class="quote"]/@href #retorna apenas o que esta no atributo href
+//div[@class="quote"]/@itentype #retorna apenas o que esta no atributo itentype
+
+para testar o xpath diretamente no scrapy deve ser usado o comando no amibente virtual ativo "scrapy shell https://quotes.toscrape.com/"
+para buscar o xpath criado execute o comando "response.xpath('//span[@class="text"]/text()').get()" com o xpath que deseja buscar
+para buscar uma lista de resultados usar o comando "response.xpath('//span[@class="text"]/text()').getall()"
+
+
+#Extrair dados 
+Colocar o que deve ser feito na pagina dento da função parse
+Codigo exemplo: 
+#Response
+    def parse(self, response):
+        #Aqui sera feito o processamento das paginas
+        for elemento in response.xpath("//div[@class='quote']"):
+            yield {
+                'frase': elemento.xpath(".//span[@class='text']/text()").get(),
+                'autor': elemento.xpath(".//small[@class='author']/text()").get(),
+                'tags': elemento.xpath(".//a[@class='tag']/text()").getall()
+            }
 
