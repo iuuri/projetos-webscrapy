@@ -22,3 +22,12 @@ class GoodReadsSpider(scrapy.Spider):
                 'autor': elemento.xpath(".//span[@class='authorOrTitle']/text()").get(),
                 'tags': elemento.xpath(".//div[@class='quoteFooter']//div//a/text()").getall()
             }
+        
+        try:
+            link_proxima_pagina = response.xpath('//a[@class="next_page"]//@href').get()
+            if link_proxima_pagina is not None:
+                link_proxima_pagina_completo = response.urljoin(link_proxima_pagina)
+                yield scrapy.Request(url=link_proxima_pagina_completo, callback=self.parse)
+        
+        except:
+            print('Todas as paginas extraidas.')
