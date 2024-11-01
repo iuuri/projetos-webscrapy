@@ -10,6 +10,29 @@ Para verificar basta colocar o link/robots.txt (mercadolivre.com/robots.txt)
 6- criar um arquivo nome_do_site.py dentro da pasta spider 
 7- importar bibliotecas conforme codigo abaixo
 8- criar um classe em camelcase com um nome do projeto finalizando com spider "NomeProjetoSpider(scrapy.Spider):" 
+9- fazer os passos de configurações abaixo: 
+Burlar e evitar bloqueios 
+- Ir ao arquivo settings.py e alterar: "ROBOTSTXT_OBEY = True" para "ROBOTSTXT_OBEY = False"
+- Descomentar a configuração DOWNLOAD_DELAY = 4
+- instalar a biblioteca "pip install scrapy-fake-useragent" 
+- Colar as configurações abaixo no arquivo settings.py para gerar agentes simulando navegadores: 
+    DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+    'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
+    'scrapy_fake_useragent.middleware.RetryUserAgentMiddleware': 401,
+}
+
+## settings.py
+
+FAKEUSERAGENT_PROVIDERS = [
+    'scrapy_fake_useragent.providers.FakeUserAgentProvider',  # This is the first provider we'll try
+    'scrapy_fake_useragent.providers.FakerProvider',  # If FakeUserAgentProvider fails, we'll use faker to generate a user-agent string for us
+    'scrapy_fake_useragent.providers.FixedUserAgentProvider',  # Fall back to USER_AGENT value
+]
+
+## Set Fallback User-Agent
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.203'
 
 #exportar dados para um csv usar o comando "scrapy crawl frasebot -o(comando) dados.csv(nome do arquivo)"
 
@@ -72,3 +95,12 @@ Codigo exemplo:
 scrapy crawl nomebot -O dados.csv
 scrapy crawl nomebot -O dados.xml
 scrapy crawl nomebot -O dados.json
+
+##Como utilizar proxy caso esteja tendo bloqueios(possui custos):
+instalar a biblioteca "pip install scrapeops-scrapy-poxy-sdk" no arquivo settings.py
+SCRAPEOPS_API_KEY = 'SUA_CHAVE_API'
+SCRAPEOPS_PROXY_ENABLED = True
+
+DOWNLOADER_MIDDLEWARES = {
+    'scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk': 725,
+}
