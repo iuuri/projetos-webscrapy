@@ -43,7 +43,7 @@ def iniciar_driver():
 
 class F1RacesSpider(scrapy.Spider):
     # identidade
-    name = 'racebot'
+    name = 'f1bot'
     # Request
 
     def start_requests(self):
@@ -56,11 +56,13 @@ class F1RacesSpider(scrapy.Spider):
     def parse(self, response):
         driver, wait = iniciar_driver()
         driver.get(response.meta['proximo_url'])
+        sleep(10)
         response_webdriver = Selector(text=driver.page_source)
 
-        for info in response_webdriver.xpath("//div[@class='sc-bwzfXH htmmBy']"):
+        for race in response_webdriver.xpath("//div[@class='sc-bZQynM llbHfj']"):
             yield {
-                'Nome Grand Prix': info.xpath(".//div/div/div/div[1]/text()").get()
-                # 'Preço': produto.xpath("./td[2]/text()").get(),
-                # 'Nota': produto.xpath("./td[3]/text()").get(),
+                'Grand Prix': race.xpath(".//div[1]/text()").get(),
+                'Circuito': race.xpath(".//div[2]/text()").get(),
+                'Piloto': race.xpath(".//a/text()").get(),
+                'Tempo': race.xpath(".//div[4]/text()").get()
             }
